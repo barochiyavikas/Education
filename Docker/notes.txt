@@ -1,0 +1,289 @@
+Join Zoom Meeting
+https://us02web.zoom.us/j/83561599574?pwd=aElTaytoMEs2VWpHRlFOYlNUZEMxdz09
+
+Meeting ID: 835 6159 9574
+Passcode: 712090
+
+
+
+usermod -aG docker ubuntu  add user to docker group to run docker command from that user
+
+docker version
+docker info
+
+/var/lib/docker    all local images path
+
+docker run <imagename>  we will use this command for create container
+docker run -it <imagename> <terminal name>  -i=interactive mode, t=terminal
+
+docker start/stop/restart <contanerid> or <contanername>  to start/stop/restart contaner
+
+docker attach <contanerid>  to login into contaner (do not use this method as contaner will stop at exit)
+ctrl+p+q to exit contaner without stoping it
+
+
+docker images   to check images availbale locally
+docker ps   it shows all runing container
+
+option for ps and images command
+-a  it shows all runing+stop contaner
+--no-trunc  to display full contaner idimage id
+-q to show only contaner id/image id
+
+docker pull <imagename> to download image from repo
+docker pull <imagename>:tagname   to download specific image version
+
+
+docker exec -it <contaner id> <terminal>  login into contaner user this method as after exit contaner will not stop
+docker exec <container id> <command>  user this for run any command in container without login into it
+
+docker commit -m "write message information" <container id>or<container name> <your image name>
+
+
+docker inspect <image Id>   check container information only use for  runing container
+
+docker rm <container Id>   remove container you can not not remove runing container, use -f option to remove runing container forcefully
+docker rm -f `docker ps -a -q`  two command at once, find all container id and remove it
+
+docker rmi <image name>:tag or <image id>  remove downloaded images, use -f for forcefully remove
+docker rmi -f `docker images -q`  two command at once, find all images id and remove it
+if any container created from image then image will not delete it will untag
+if container is stopped then you can delete image with -f option
+
+
+-c <commands or script> use this option with docker run command to run script, this option will not give terminal back until process is done
+-d (detach mode) use  this option with docker run command to run command in detach mode as it will give terminal back and run process in background
+use this option only when you need to run any prosess or script
+-rm  use this optionwith docker run command to remove container automatically after work done.
+
+
+docker logs <container id> or <container name>  to check all the detailed command or process history of container
+docker top <container id> or <container name>   to check system process of container
+
+docker save --output <filename> <image name>:<tag>  backup any image for backup perpose
+file name standerd is <imagename>.<version or tag>.tar  tag is optional in image name
+do not use image id for this command as null value will come after restore in repository & tage value
+
+docker load --input <file name>   to load image from backup file
+
+docker history <image name>:tag    check detailed history of image, check commit message, check layer information
+
+docker run -d httpd  container/website will be access only from container ip address, not host ip address
+run any preconfigured image in detach mode only
+
+docker run -d --name web1 -p 80 httpd  container port 80 will be bind to random port of host system
+docker run -d --name web1 -p 80:80 httpd container port 80 will be bind to port 80 of host system
+-p 80:80
+host-port:container-port
+use multiple -p option for multiple port maping
+
+docker run -d --name web1 -P httpd   host system random port will be bind to container expose port
+
+docker login  to login into docker hub account
+
+docker tag <old image name> <new image name> you need to assing account name to the image name for push image in account
+ex. docker tag centos:v1 barochiyavikas/centos:v1
+
+docker push <image name>:<tag>  to push image in your account
+ex. docker push barochiyavikas/centos:v1
+
+
+Docker File
+
+give name of docker file "Dockerfile"
+
+use capitol latter for directives in docker file
+
+
+Docker File Decrectives:
+
+FROM
+ex: FROM centos:7
+name of base image or which image you want to use
+
+LABEL
+give inforamtion like author or company name
+use key-value pair
+ex: LABEL maintainer:"vikas"
+
+RUN
+ex. RUN adduser vikas   
+use for runing command like mkdir docker aws
+RUN will run when image is created
+if  you define multiple all command will be executed
+
+USER
+ex. USER vikas
+default login with user in container
+build perform all step forward using this user
+to avoid anypermission issue use this directive last
+
+CMD
+ex. CMD echo "hello"
+use for runing command
+CMD will run when container is created
+if you define multiple CMD only last one will be executed
+CMD can be overwrite if you define command at last
+use CMD at last in docker file
+
+ENTRYPOINT
+ex. ENTRYPOINT echo "hello"
+ENTRYPOINT will run when container is created
+if you define multiple ENTRYPOINT only last one will be executed
+ENTRYPOINT can not be overwrite if you define command at last
+use ENTRYPOINT at last in docker file
+
+note: you need to run any service in forground using CMD or ENTRYPOINT for  container to run continueslly
+
+WORKDIR
+ex. WORKDIR /var
+define default work directory for container when conatainer is created
+default directory will be / if WORKDIR not provided
+
+EXPOSE
+ex. EXPOSE 80 443
+to expose container port
+you can also define multiple port
+
+COPY
+COPY <file_or_folder_path_in_host_system> <path_of_container_dir>
+ex. COPY /home/index.html /var/www/html/
+to copy file or folder in containder directory while creating image
+
+ADD
+ADD <file_or_folder_path_in_host_system_or_any_link> <path_of_container_dir>
+ex. ADD https://www.google.com/image1.png /var/www/html/
+to copy file or folder or any links document in containder directory while creating image
+
+
+
+docker build -t <image_name>:<tag> <directory path of Dockerfile>
+-t  tag (name of image>
+docker build -t <image_name>:<tag> -f <file_name> <directory path of Dockerfile>
+-f docker file name if name is custom like mydockerfile
+--no-cache   use this option for not using cashe for creating layers, or create all layers once again
+
+
+Volumes
+docker volume ls   list all volumes
+
+-v <container dir path>  container path map to host random path
+directory is fixed: /var/lib/docker/volumes
+ex: -v /var/www/html  
+
+-v <host path>:<container path>  host system fix path will map with container path
+ex: -v /mydata:/var/www/html
+if you use path other then /var/lib/docker/volumes then it will not reflect in docker volume ls command
+
+-v <folder name>:<container path>  create and attach folder from /var/lib/docker/volumes dir to container path 
+ex: -v web1:/var/www/html   host system path is /var/lib/docker/volumes/web1
+
+-v <folder name>:<container path>:ro  for read only file system
+ex: -v web1:/var/www/html:ro
+use this method if data needs to be only read from container or you want to attach same folder to multiple container to assure data change will not affect all container
+
+
+Networks
+
+docker network ls   list down all network interface
+
+docker network inspect <interface name>  to see all details of network interface
+
+there will be 3 network interface created by default
+
+NETWORK ID     NAME      DRIVER    SCOPE
+fa17e88926a3   bridge    bridge    local
+38c06d007333   host      host      local
+77e355429f3b   none      null      local
+
+Default bridge: we can communicate using IP adress but not name
+Custom created network: we can communicate using IP address & name both
+
+default bridge network range
+Subnet:172.17.0.0/16
+Gateway:172.17.0.1
+
+docker network create --subnet <range> --gateway <ip> <your interface name>
+create your custom network interface
+ex: docker network create --subnet 192.168.2.0/24 --gateway 192.168.2.1 mybridge
+
+use --net/--network in docker run command to use your custom network
+docker run -d --net mybridge --name web1 httpd
+
+use --ip option in docker run command to assign ip address to your container
+docker run -d --net mybridge -ip 192.168.2.100 --name web1 httpd
+you can only assing fix ip in custom network
+
+docker network disconnect <interface name> <container name>
+docker network disconnect bridge web1
+disconnect network from interface
+
+docker network connect <interface name> <container name>
+docker network connect bridge web1
+connect network from interface
+
+if you want to communicate with name in default network then create commuicate with container first ex. db container then create communicate from container ex. web container
+
+in creation of communicate from container user --link <container name> option in docker run commnad
+ex. docker run -it --link db1 --name web1 centos bash
+this communication will only works oneway
+
+docker network rm <interface name>
+to delete network interface
+ex. docker network rm mybridge
+
+Example of wordpress website with db
+1. DB Server
+requirement:
+IP (name)
+Username
+Password
+Database Name
+data folder of mysql: /var/lib/mysql
+
+docker run -d --name db -e MYSQL_ROOT_PASSWORD=Redhat123 -e MYSQL_DATABASE=wordpress -v db:/var/lib/mysql mysql
+
+2. Web Server
+Port Expose
+DB:IP Username, Password, DB Name
+
+docker run -d --name devwordpress -p 8080:80 --link=db -e WORDPRESS_DB_HOST=db -e WORDPRESS_DB_USER=root -e WORDPRESS_DB_PASSWORD=Redhat123 -e WORDPRESS_DB_NAME=wordpress wordpress
+
+
+
+Docker Compose
+
+file name should be docker-compose.yaml
+
+docker-compose --version to check docker compose version
+
+Install Docker Compose:
+
+sudo curl -L https://github.com/docker/compose/releases/download/1.29.2/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+
+docker-compose up -d  up & run docker compose file servers
+docker-compose down  down docker compose file server
+
+docker stats  to check cpu and memory utilization of containers
+
+to limit cpu&mem from grub
+edit /etc/default/grub file
+GRUB_CMDLINE_LINUX="cdgroup_enable=memory swapaccount=1"
+rboot system
+
+
+sudo docker run -it --memory="[memory_limit]" --memory-swap="[memory_limit]" [docker_image]  use this option for memory hard limit & swap memory limit
+sudo docker run -it --memory="1g" --memory-swap="2g" ubuntu
+
+sudo docker run -it --memory="1g" --memory-reservation="750m" ubuntu to set  soft limit  for memory
+
+sudo docker run -it --cpus="1.0" ubuntu  to set cpu limit
+
+
+
+
+
+
+ 
+

@@ -1,0 +1,110 @@
+1. docker version   for complete server/client version details
+
+2. docker --version  for only version details
+
+3. docker info  for complete information of docker engine
+
+4. docker  for list of all command
+
+5. docker container ls   for list all runing containers or user docker ps
+
+6. docker container ls -a   for list all runing & stopped containers or user docker ps -a
+
+7. docker container stop <container id>  for stop container
+
+8. docker container start <container id>  for start container
+
+9. docker container logs <container id>/<container name>  for check logs of contrainer
+
+10. docker container top <container id>/<container name>  for check running process of contrainer
+
+11. docker container stats   performance status on all containers
+
+12. docker container rm <space separated container ids> for remove all unused containers
+
+13. docker container rm -f <space separated container ids>  remove container forcefully
+
+14. docker container run --publish/-p <host_port:container_port> -it --detach/-d --name <Name> <image_name>  to exicute new container
+   --publish/-p  for host_port & container_port
+   -i for interactive mode
+   -t for allow tty terminal
+   --detach/-d  run container in background
+   --name  provide container name
+   --network <network name/id>  to attached container with specific network
+   -e   to use environment variable
+
+15. docker container inspect -f <format_string> <container id>/<container name>  details of one container config/find the ip of container
+    -f <format_string> to format and get specific info from entire json
+    ex. '{{.NetworkSettings.IPAddress}}'  for ip address of container
+
+16. docker container exec -it <container id>/<container name> <command>  open running container interactivity and run command in running container
+    -i  to open season interactively
+    -t  for tty console
+
+17. docker images   list all images
+
+18. docker pull <image name>   download image
+    docker pull <image name>:<image version>   download specific version of image
+19. docker image push <image name>   upload image to docker hub account
+
+20. docker history <image name>   details of image layers
+
+21. docker tag <source image>:<tag> <new image>:<tag>
+
+22. docker login   to login to docker hub repository
+23. docker logout  to logout from docker hub repository
+
+24. docker build -f <file name> -t <ImageName>:<TagName> <dir>
+    -t  to mention tag to the image
+    -f  path and file name of docker file if custom name provided
+    ImageName   name you want to give to your image
+    TageName    tag you want to give to your image
+    dir      the directory where the docker file is present
+
+25. docker volume ls   list all volumes
+
+26. docker volume inspect <volume name>  to inspect volume
+
+27. --mount source=<source folder name>,destination=<container path>   use this option in docker run command to create and mount volume with container
+ex: docker run -d --mount source=web-server,destination=/var/www/html httpd
+   --mount type=bind,source=<source folder name>,target=<container path>   use this option to use bind mount
+ex: docker run -d --mount type=bind,source=/root/web,target=/var/www/html httpd
+   you can not define bind mount in docker file
+
+28. docker container port <container id>  find the traffic port and protocol on container
+
+29. docker network ls   list   show all networks
+    docker network ls -f <key=value>   filter networks with key-value pair  ex. docker network ls -f driver=bridge
+
+30. docker network inspect <network id>   info about one or more network interface, result is in json object
+
+31. docker network create <network driver> <network name>   to create new network (default its create bridge)
+
+32. docker network connect <network name/id> <container name/id>   connect network with running container
+    you can connect container with more then 1 network
+
+33. docker network disconnect <network name/id> <container name/id>   disconnect network with running container
+    you can disconnect container from all network
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
